@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gallery Page</title>
+    <style>
+        /* GENERAL STYLES */
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url(images/gallery.jpg) no-repeat center center fixed;
+        background-size: cover;
+        background-color: #f2f2f2;
+    }
+
+            {/* PAGE LOAD ANIMATION */
+            opacity: 0; 
+            transform: translateY(30px);
+            animation: pageLoad 1s forwards;
+        }
+
+        @keyframes pageLoad {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome highlight bar */
+        #welcome-bar {
+            display: none;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(6px);
+            width: 80%;
+            margin: 20px auto 5px auto;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+            transition: opacity 0.5s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: black;
+        }
+
+        /* NAVIGATION */
+        nav {
+            background: skyblue;
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px auto;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 50px;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgb(56,130,209);
+            color: white;
+        }
+
+        nav a.active {
+            background-color: lightgreen;
+            color: black;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        /* CONTENT */
+        .content {
+            background: white;
+            color: black;
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto 120px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+            text-align: center;
+
+            /* SLIDE-UP ANIMATION ON LOAD */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: contentLoad 1s forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes contentLoad {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content h2, .content h3 {
+            margin-bottom: 15px;
+            color: rgb(56,130,209);
+        }
+
+        /* GALLERY */
+        .gallery-section {
+            width: 100%;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        .gallery-category {
+            margin-bottom: 40px;
+        }
+
+        .gallery-category h2, .gallery-category h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #002455;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: 0.3s ease;
+            cursor: pointer;
+
+            /* FADE + SLIDE ON LOAD */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: imgLoad 0.6s forwards;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes imgLoad {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lightbox */
+        .lightbox { 
+            display: none; 
+            position: fixed; 
+            z-index: 999; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.9); 
+            justify-content: center; 
+            align-items: center; 
+            overflow: hidden;
+        }
+        .lightbox-content { 
+            max-width: 90%; 
+            max-height: 90%; 
+            border-radius: 15px; 
+            position: relative;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .lightbox .close { 
+            position: absolute; top: 30px; right: 40px; 
+            color: white; font-size: 50px; font-weight: bold; 
+            cursor: pointer; transition: color 0.3s; 
+            z-index: 1001;
+        }
+        .lightbox .close:hover { color: #C26DBC; }
+        .lightbox .nav { 
+            position: absolute; top: 50%; transform: translateY(-50%); 
+            font-size: 60px; color: white; cursor: pointer; user-select: none; z-index: 1001;
+        }
+        .lightbox .prev { left: 30px; }
+        .lightbox .next { right: 30px; }
+
+        /* Live date & time */
+        #datetime {
+            position: fixed;
+            bottom: 60px;
+            left: 20px;
+            background: rgba(173, 216, 230, 0.6);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+        /* FOOTER */
+       .footer {
+        background: #111;
+        color: #ddd;
+        text-align: center;
+        padding: 15px 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-top: 3px solid rgb(56,130,209);
+        font-size: 0.9em;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        position: fixed;
+    }
+
+    .footer p { margin: 0; }
+    </style>
+</head>
+<body>
+
+<!-- Welcome bar -->
+<div id="welcome-bar"></div>
+
+<h1 style="color: #3C467B"><b>Safia' Personal Website</b></h1>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="aboutme.html">About Me</a>
+    <a href="family.html">Family</a>
+    <a href="education.html">Education</a>
+    <a href="experience.html">Experience</a>
+    <a href="friends.html">Friends</a>
+    <a href="favourites.html">Favourites</a>
+    <a href="gallery.html" class="active">Gallery</a>
+</nav>
+
+<div class="content">
+
+    <!-- FOOD -->
+    <section id="food" class="gallery-section">
+        <div class="gallery-category">
+            <h2><b>FOO-EDS</b></h2>
+            <div class="gallery-grid">
+                <img src="images/food melaka.jpg">
+                <img src="images/chagee.jpg">
+                <img src="images/saigon.jpg">
+                <img src="images/gepuk.jpg">
+                <img src="images/dakgalbi.jpg">
+                <img src="images/luxe.jpg">
+                <img src="images/tealive.jpg">
+                <img src="images/boost.jpg">
+                <img src="images/kaklong.jpg">
+                <img src="images/nasken.jpg">
+                <img src="images/avocado 2.jpg">
+                <img src="images/layers.jpg">
+                <img src="images/tanjung.jpg">
+                <img src="images/damascus.jpg">
+                <img src="images/kunafa.jpg">
+                <img src="images/bingsu.jpg">
+                <img src="images/llaollao.jpg">
+                <img src="images/fd.jpeg">
+                <img src="images/fd 1.jpeg">
+                <img src="images/fd 2.jpeg">
+            </div>
+        </div>
+    </section>
+
+<!-- BIG FAMILY -->
+    <section id="scenery" class="gallery-section">
+        <div class="gallery-category">
+            <h2><b>BIG FAMILY</b></h2>
+            <div class="gallery-grid">
+                <img src="images/bf.jpeg" alt="Big Family">
+                <img src="images/bf 1.jpeg" alt="Big Family">
+                <img src="images/bf 3.jpeg" alt="Big Family">
+                <img src="images/bf 4.jpeg" alt="Big Family">
+                <img src="images/bf 6.jpeg" alt="Big Family">
+                <img src="images/bf 7.jpeg" alt="Big Family">
+                <img src="images/bf 8.jpeg" alt="Big Family">
+                <img src="images/bf 9.jpeg" alt="Big Family">
+                <img src="images/bf 10.jpeg" alt="Big Family">
+                <img src="images/bf 11.jpeg" alt="Big Family">
+                <img src="images/bf 12.jpeg" alt="Big Family">
+                <img src="images/bf 13.jpeg" alt="Big Family">
+                <img src="images/bf 14.jpeg" alt="Big Family">
+                <img src="images/bf 15.jpeg" alt="Big Family">
+                <img src="images/bf 16.jpeg" alt="Big Family">
+                <img src="images/bf 18.jpeg" alt="Big Family">
+        </div>
+    </section>
+
+     <!-- SCENERY -->
+    <section id="scenery" class="gallery-section">
+        <div class="gallery-category">
+            <h2><b>SCENERY</b></h2>
+            <div class="gallery-grid">
+                <img src="images/pantai.jpeg" alt="Scenery 1">
+                <img src="images/pantai 1.jpeg" alt="Scenery 2">
+                <img src="images/sunset.jpeg" alt="Scenery 3">
+                <img src="images/jambatan.jpeg" alt="Scenery 4">
+                <img src="images/jambatan 2.jpeg" alt="Scenery 5">
+                <img src="images/memancing.jpeg" alt="Scenery 6">
+                <img src="images/kabus.jpeg" alt="Scenery 7">
+                <img src="images/uitm.jpeg" alt="Scenery 8">
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <span class="nav prev">&#10094;</span>
+    <img class="lightbox-content" id="lightbox-img">
+    <span class="nav next">&#10095;</span>
+</div>
+
+<!-- Live date & time -->
+<div id="datetime"></div>
+
+<footer class="footer">
+    <p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+</footer>
+
+<script>
+    // Welcome bar
+    window.addEventListener("DOMContentLoaded", () => {
+        const name = localStorage.getItem("visitorName");
+        if(name){
+            const bar = document.getElementById("welcome-bar");
+            bar.innerHTML = `Hi ${name}, Welcome to my personal website!`;
+            bar.style.display = 'block';
+            setTimeout(()=>{ bar.style.opacity = 1; }, 50);
+        }
+    });
+
+    // Live date & time
+    function updateDateTime() {
+        const now = new Date();
+        const day = now.getDate();
+        const monthNames = ["January","February","March","April","May","June",
+                            "July","August","September","October","November","December"];
+        const month = monthNames[now.getMonth()];
+        const year = now.getFullYear();
+        const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        const weekday = weekdays[now.getDay()];
+
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+
+        hours = hours < 10 ? "0"+hours : hours;
+        minutes = minutes < 10 ? "0"+minutes : minutes;
+        seconds = seconds < 10 ? "0"+seconds : seconds;
+
+        const formatted = `${day} ${month} ${year}, ${weekday} | ${hours}:${minutes}:${seconds}`;
+        document.getElementById("datetime").innerHTML = formatted;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Lightbox slide per category with animation
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.querySelector('.lightbox .close');
+    const prevBtn = document.querySelector('.lightbox .prev');
+    const nextBtn = document.querySelector('.lightbox .next');
+
+    let currentImages = [];
+    let currentIndex = 0;
+    let animating = false;
+
+    document.querySelectorAll('.gallery-section').forEach(section => {
+        const imgs = section.querySelectorAll('img');
+        const srcs = Array.from(imgs).map(i => i.src);
+
+        imgs.forEach((img, idx) => {
+            img.addEventListener('click', () => {
+                currentImages = srcs;
+                currentIndex = idx;
+                lightbox.style.display = 'flex';
+                lightboxImg.src = currentImages[currentIndex];
+                lightboxImg.style.transform = 'translateY(30px)';
+                lightboxImg.style.opacity = 0;
+                setTimeout(() => {
+                    lightboxImg.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+                    lightboxImg.style.transform = 'translateY(0)';
+                    lightboxImg.style.opacity = 1;
+                }, 50);
+            });
+        });
+    });
+
+    function showSlide(next=true) {
+        if(animating) return;
+        animating = true;
+
+        let direction = next ? 1 : -1;
+        let newIndex = (currentIndex + direction + currentImages.length) % currentImages.length;
+
+        // Animate out
+        lightboxImg.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        lightboxImg.style.transform = `translateX(${ -100*direction }%)`;
+        lightboxImg.style.opacity = 0;
+
+        setTimeout(() => {
+            currentIndex = newIndex;
+            lightboxImg.src = currentImages[currentIndex];
+            // Animate in
+            lightboxImg.style.transform = `translateX(${100*direction}%)`;
+            lightboxImg.style.opacity = 0;
+            setTimeout(() => {
+                lightboxImg.style.transform = 'translateX(0)';
+                lightboxImg.style.opacity = 1;
+                animating = false;
+            }, 50);
+        }, 500);
+    }
+
+    nextBtn.addEventListener('click', () => showSlide(true));
+    prevBtn.addEventListener('click', () => showSlide(false));
+
+    closeBtn.addEventListener('click', () => { lightbox.style.display = 'none'; });
+    lightbox.addEventListener('click', e => { if(e.target === lightbox) lightbox.style.display = 'none'; });
+
+    document.addEventListener('keydown', (e) => {
+        if(lightbox.style.display === 'flex'){
+            if(e.key === 'ArrowRight') showSlide(true);
+            if(e.key === 'ArrowLeft') showSlide(false);
+            if(e.key === 'Escape') lightbox.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

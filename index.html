@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+    <style>
+    /* ===== General Styling ===== */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url(images/hm.jpg) no-repeat center center fixed;
+        background-size: cover;
+        background-color: #F9DFDF;
+    }
+
+    h1 { text-align: center; color: #FFB76C; margin: 20px 0; }
+
+    /* Welcome bar */
+    #welcome-bar {
+        display: none;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        width: 80%;
+        margin: 20px auto 5px auto;
+        padding: 12px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Navigation */
+    nav {
+        background: skyblue;
+        width: 800px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px auto;
+        padding: 8px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+    }
+
+    nav a {
+        color: black;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 50px;
+        transition: 0.3s;
+    }
+
+    nav a:hover { background: rgb(56,130,209); color: white; }
+    nav a.active { background: lightgreen; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+
+    /* Content Box */
+    .content {
+        background: #C2E2FA;
+        width: 80%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 2px 2px 15px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    /* Preview Section */
+    .preview-section {
+        width: 85%;
+        margin: 40px auto 120px auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        justify-items: center;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .preview-card {
+        padding: 18px;
+        border-radius: 15px;
+        text-align: center;
+        width: 200px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+
+    /* Hover effect like popup */
+    .preview-card:hover {
+        transform: scale(1.08);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.35);
+        z-index: 10;
+    }
+
+    .preview-card img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 8px;
+    }
+
+    .preview-card a { text-decoration: none; color: rgb(56,130,209); font-weight: bold; }
+
+    /* Pastel colors */
+    .preview-card:nth-child(1) { background: #CBDCEB; }
+    .preview-card:nth-child(2) { background: #CBDCEB; }
+    .preview-card:nth-child(3) { background: #CBDCEB; }
+    .preview-card:nth-child(4) { background: #CBDCEB; }
+    .preview-card:nth-child(5) { background: #CBDCEB; }
+    .preview-card:nth-child(6) { background: #CBDCEB; }
+    .preview-card:last-child { background: #CBDCEB; grid-column: 2; }
+
+    /* Footer */
+    .footer {
+        background: #111;
+        color: #ddd;
+        text-align: center;
+        padding: 15px 0;
+        width: 100%;
+        border-top: 3px solid rgb(56,130,209);
+        font-size: 0.9em;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        position: fixed;
+        bottom: 0;
+    }
+
+    .footer p { margin: 0; }
+
+    /* Popup overlay */
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.35);
+        backdrop-filter: blur(3px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+
+    .popup-box {
+        background: white;
+        width: 330px;
+        padding: 25px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0px 6px 22px rgba(0,0,0,0.25);
+    }
+
+    .popup-box h3 { margin-bottom: 10px; font-size: 20px; color: #444; }
+    .popup-box input {
+        width: 90%;
+        padding: 10px;
+        font-size: 15px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+    }
+    .popup-box button {
+        margin-top: 15px;
+        padding: 10px 18px;
+        background: #72a0ff;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .popup-box button:hover { background: #3a6fd3; }
+
+    /* Live date & time */
+    #datetime {
+        position: fixed;
+        bottom: 60px;
+        left: 20px;
+        background: rgba(173, 216, 230, 0.6);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        font-family: Arial, sans-serif;
+    }
+
+    /* Music toggle */
+    #music-toggle {
+        position: fixed;
+        bottom: 100px;
+        left: 20px;
+        padding: 10px 15px;
+        background: #72a0ff;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        transition: 0.3s;
+        z-index: 1000;
+    }
+    #music-toggle:hover { background: #3a6fd3; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-bar"></div>
+    <h1><b>Safia' Personal Website</b></h1>
+
+    <nav>
+        <a href="index.html" class="active">Home</a>
+        <a href="aboutme.html">About Me</a>
+        <a href="family.html">Family</a>
+        <a href="education.html">Education</a>
+        <a href="experience.html">Experience</a>
+        <a href="friends.html">Friends</a>
+        <a href="favourites.html">Favourites</a>
+        <a href="gallery.html">Gallery</a>
+    </nav>
+
+    <div class="content">
+        <h2 style="color: #002455; font-family: 'Forte', cursive;">THIS IS HOMEPAGE</h2>
+        <p><em>This is my personal website where I will share all of my project, my personal details, hobbies, education background, my family, my favourites and many more</em></p>
+        <p><u>“One of the greatest regrets in life is being what others would want you to be, rather than being yourself.” ― Shannon L. Alder</u></p>
+        <p>My life motto is: Do it now or regret it later</p>
+    </div>
+
+    <div class="preview-section" id="preview-section">
+        <div class="preview-card"><img src="images/account.png"><a href="aboutme.html">About Me</a></div>
+        <div class="preview-card"><img src="images/iconfamily.png"><a href="family.html">Family</a></div>
+        <div class="preview-card"><img src="images/iconedu.png"><a href="education.html">Education</a></div>
+        <div class="preview-card"><img src="images/iconexp.jpg"><a href="experience.html">Experience</a></div>
+        <div class="preview-card"><img src="images/iconfriends.png"><a href="friends.html">Friends</a></div>
+        <div class="preview-card"><img src="images/iconfavourite.png"><a href="favourites.html">Favourites</a></div>
+        <div class="preview-card"><img src="images/icongallery.png"><a href="gallery.html">Gallery</a></div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+    </footer>
+
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <h3>Welcome!</h3>
+            <p>Please enter your name ><</p>
+            <input type="text" id="visitorName" placeholder="Your name...">
+            <button onclick="submitName()">OK</button>
+        </div>
+    </div>
+
+    <!-- Live date & time -->
+    <div id="datetime"></div>
+
+    <!-- Audio & toggle button -->
+    <audio id="bg-music" loop>
+        <source src="audio/the fate of ophelia.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-toggle">Mute Music</button>
+
+    <script>
+        window.onload = function() {
+            document.getElementById("popup").style.display = "flex";
+        };
+
+        const bgMusic = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("music-toggle");
+        const previewSection = document.getElementById("preview-section");
+
+        function submitName() {
+            let name = document.getElementById("visitorName").value.trim();
+            if(name === "") name = "there";
+
+            // Save name to localStorage
+            localStorage.setItem("visitorName", name);
+
+            // Show welcome bar
+            const bar = document.getElementById("welcome-bar");
+            bar.innerHTML = "Hi " + name + ", Welcome to my personal website!";
+            bar.style.display = "block";
+
+            setTimeout(()=>{ bar.style.opacity = 1; }, 50);
+
+            // Hide popup
+            document.getElementById("popup").style.display = "none";
+
+            // Play music
+            bgMusic.play().catch(err => console.warn(err));
+
+            // Show preview cards with fade-in
+            previewSection.style.opacity = 1;
+            previewSection.querySelectorAll('.preview-card').forEach((card,i)=>{
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                setTimeout(()=>{
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = 1;
+                    card.style.transform = 'translateY(0)';
+                }, i*100);
+            });
+        }
+
+        document.getElementById("visitorName").addEventListener("keypress", function(e){
+            if(e.key==="Enter") submitName();
+        });
+
+        musicToggle.addEventListener("click", function() {
+            if(bgMusic.paused || bgMusic.muted) { bgMusic.muted=false; bgMusic.play(); musicToggle.innerText="Mute Music"; }
+            else { bgMusic.muted=true; musicToggle.innerText="Unmute Music"; }
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+            const day = now.getDate();
+            const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            const month = monthNames[now.getMonth()];
+            const year = now.getFullYear();
+            const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            const weekday = weekdays[now.getDay()];
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            hours = hours<10?"0"+hours:hours;
+            minutes = minutes<10?"0"+minutes:minutes;
+            seconds = seconds<10?"0"+seconds:seconds;
+            const formatted = `${day} ${month} ${year}, ${weekday} | ${hours}:${minutes}:${seconds}`;
+            document.getElementById("datetime").innerHTML = formatted;
+        }
+        setInterval(updateDateTime,1000);
+        updateDateTime();
+    </script>
+</body>
+</html>

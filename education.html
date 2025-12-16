@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Education Page</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url(images/gallery.jpg) no-repeat center center fixed;
+        background-size: cover;
+        background-color: #f2f2f2;
+    }
+
+    /* Welcome bar */
+    #welcome-bar {
+        display: none;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        width: 80%;
+        margin: 20px auto 5px auto;
+        padding: 12px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+        transition: opacity 0.5s ease;
+    }
+
+    /* Live date & time */
+    #datetime {
+        position: fixed;
+        bottom: 80px;
+        left: 20px;
+        background: rgba(173, 216, 230, 0.6);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+
+    h1 {
+        text-align: center;
+        color: black;
+        margin: 20px 0;
+    }
+
+    nav {
+        background: skyblue;
+        width: 800px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px auto;
+        padding: 8px 20px;
+        border-radius: 50px;
+        box-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+    }
+
+    nav a {
+        color: black;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 50px;
+    }
+
+    nav a.active {
+        background-color: lightgreen;
+    }
+
+    /* ===== LAYOUT ===== */
+    .layout {
+        max-width: 1200px;
+        margin: 20px auto 120px;
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Default box (GREEN) */
+    .box {
+        background: #C9E6F0;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeSlideIn 0.8s forwards;
+    }
+
+    /* ACHIEVEMENTS BOX ONLY */
+    .layout .box:nth-child(2) {
+        background: #DFF2EB;
+    }
+
+    .box:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        transition: all 0.3s ease;
+    }
+
+    /* h3 default */
+    .box h3 {
+        text-align: center;
+        margin-top: 0;
+        color: #002455;
+    }
+
+    /* Achievements h3 different color */
+    .layout .box:nth-child(2) h3 {
+        color: #006A71;
+    }
+
+    /* Achievements bullet spacing */
+    .layout .box:nth-child(2) li {
+        line-height: 1.1;
+        margin-bottom: 4px;
+    }
+
+/* Resize primary school image */
+.layout .box:nth-child(1) .edu-img {
+    width: 180px;       /* saiz sama dengan secondary school */
+    display: block;     /* pastikan block supaya margin auto berfungsi */
+    margin: 0 auto;     /* center gambar */
+    border-radius: 12px;
+}
+
+    .edu-img {
+        width: 100%;
+        border-radius: 12px;
+        margin: 10px 0;
+    }
+
+    /* ===== UNIVERSITY FULL WIDTH ===== */
+    .university {
+    grid-column: 1 / -1; /* full width */
+    width: 100%;          /* kekal full width */
+    max-width: 1100px;    /* lebih lebar dari box lain */
+    margin: 0 auto;
+    padding: 30px 20px;   /* tambah ruang dalaman */
+    text-align: center;
+}
+
+
+    .university img {
+        width: 200px;
+        display: block;
+        margin: 15px auto;
+    }
+
+    /* Footer */
+    .footer {
+        background: #111;
+        color: #ddd;
+        text-align: center;
+        padding: 15px 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-top: 3px solid rgb(56,130,209);
+        font-size: 0.9em;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        position: fixed;
+    }
+
+    .footer p {
+        margin: 0;
+    }
+
+    /* Live date & time bottom-left */
+    #datetime {
+        position: fixed;
+        bottom: 60px;
+        left: 20px;
+        background: rgba(173, 216, 230, 0.6);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+    }
+
+    @keyframes fadeSlideIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    </style>
+</head>
+
+<body>
+
+<div id="welcome-bar"></div>
+
+<h1 style="color: #3C467B"><b>Safia' Personal Website</b></h1>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="aboutme.html">About Me</a>
+    <a href="family.html">Family</a>
+    <a href="education.html" class="active">Education</a>
+    <a href="experience.html">Experience</a>
+    <a href="friends.html">Friends</a>
+    <a href="favourites.html">Favourites</a>
+    <a href="gallery.html">Gallery</a>
+</nav>
+
+<div class="layout">
+
+    <div class="box">
+    <h3 style="text-align: center;"><b>PRIMARY SCHOOL</b></h3>
+    <img src="images/syp.jpg" class="edu-img">
+    <p style="text-align: center;"><b>SK Sultan Yahya Petra 1</b></p>
+    <p>I attended SK Sultan Yahya Petra 1 in Kuala Krai, Kelantan from 2011 to 2017.</p>
+    <p>During my time there, I enjoyed subjects like Math, Science and English.</p>
+    <p>I also actively participated in Choir and Angklung Orchestra.</p>
+</div>
+
+
+    <div class="box">
+        <h3><b>ACHIEVEMENTS</b></h3>
+
+        <p><b>Primary School</b></p>
+        <ul>
+            <li>🏅 6A Candidates of UPSR</li>
+            <li>🏅 2nd Place Winner of State Level Poetry Writing Competition</li>
+            <li>🏅 3rd Place Winner of National Poetry Writing Competition</li>
+        </ul>
+
+        <p><b>Secondary School</b></p>
+        <ul>
+            <li>School netball representative</li>
+            <li>Class president</li>
+        </ul>
+
+        <p><b>University Level</b></p>
+        <ul>
+            <li>🏅 Dean’s List — Semester 1</li>
+            <li>🏅 Dean’s List — Semester 2</li>
+            <li>🏅 Dean’s List — Semester 3</li>
+            <li>🏅 Dean’s List — Semester 4</li>
+        </ul>
+
+        <ul>
+            <li>Programme Director of ESKEP – Outdoor Recreation Club (ORC)</li>
+            <li>AJK of Larian Warisan Batik Nusantara by ORC</li>
+            <li>AJK of Annual General Meeting by ORC</li>
+            <li>AJK of Beat and Burn by ORC & CUTE</li>
+            <li>AJK of ClimbXtreme: Muse Ecopark by ORC</li>
+            <li>AJK of Hari Bersama Ahli ORC</li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h3><b>SECONDARY SCHOOL</b></h3>
+        <img src="images/mrkk.jpg" class="edu-img">
+        <p><b>Maahad Rahmaniah Kuala Krai</b></p>
+        <p>I studied at Maahad Rahmaniah Kuala Krai from 2018 to 2023, where I focused on academic subjects. I developed strong skills in 
+        English, Math, Arabic and Science Strean subjects.</p>
+        <p>Besides, I actively participated in Netball and achieved recognition for academic excellence during my final year.</p>
+    </div>
+
+    <div class="box university">
+        <h3><b>UNIVERSITY EDUCATION</b></h3>
+        <img src="images/uitm 1.jpg">
+        <p><b>Universiti Teknologi MARA (UiTM)</b></p>
+        <p>Diploma in Information Management</p>
+        <p>I am currently pursuing a Diploma in Information Management at Universiti Teknologi MARA (UiTM), 
+        where I am enhancing my knowledge in information systems, records management, and library.</p>
+        <p>I actively participate in group projects and university club activities to develop both academic and soft skills.</p>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+</footer>
+
+<div id="datetime"></div>
+
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const day = now.getDate();
+    const monthNames = ["January","February","March","April","May","June",
+                        "July","August","September","October","November","December"];
+    const month = monthNames[now.getMonth()];
+    const year = now.getFullYear();
+    const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const weekday = weekdays[now.getDay()];
+
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let s = now.getSeconds();
+
+    h = h < 10 ? "0"+h : h;
+    m = m < 10 ? "0"+m : m;
+    s = s < 10 ? "0"+s : s;
+
+    document.getElementById("datetime").innerHTML =
+        `${day} ${month} ${year}, ${weekday} | ${h}:${m}:${s}`;
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+window.addEventListener("DOMContentLoaded", () => {
+    const name = localStorage.getItem("visitorName");
+    if(name){
+        const bar = document.getElementById("welcome-bar");
+        bar.innerHTML = `Hi ${name}, Welcome to my personal website!`;
+        bar.style.display = "block";
+        setTimeout(()=>{ bar.style.opacity = 1; }, 50);
+    }
+
+    const boxes = document.querySelectorAll('.box');
+    boxes.forEach((box, i) => {
+        box.style.animationDelay = `${0.3 + i*0.2}s`;
+    });
+});
+</script>
+
+</body>
+</html>

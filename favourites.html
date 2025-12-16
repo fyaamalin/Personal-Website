@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favourites Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url(images/gallery.jpg) no-repeat center center fixed;
+            background-size: cover;
+            background-color: #f2f2f2;
+        }
+
+        /* Welcome bar */
+        #welcome-bar {
+            display: none;
+            opacity: 0;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(6px);
+            width: 80%;
+            margin: 20px auto 5px auto;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+            transition: opacity 0.5s ease;
+        }
+
+        h1 { text-align:center; color:black;}
+
+        nav {
+            background: skyblue;
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px auto;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+        }
+        nav a {
+            color:black;
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:50px;
+            transition: background 0.3s,color 0.3s,box-shadow 0.3s;
+        }
+        nav a:hover{background-color:rgb(56,130,209);color:white;}
+        nav a.active{background-color:lightgreen;color:black;box-shadow:0 3px 8px rgba(0,0,0,0.3);}
+
+        /* Audio Player within card */
+        .audio-player audio {
+            width: 100%;       /* pastikan muat dalam kad */
+            max-width: 220px;  /* saiz maksimum supaya tak terlalu besar */
+            outline: none;
+            border-radius: 8px;
+}
+
+        .audio-player p {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #333;
+}
+
+
+        .favourites-section{
+            max-width:1000px;
+            margin:20px auto 120px auto;
+            padding:20px;
+            text-align:center;
+        }
+
+        .favourites-section h2{
+            font-size:2em;
+            color:#C26DBC;
+            margin-bottom:30px;
+        }
+        .favourites-section h2::after{
+            content:'';
+            width:60px;
+            height:3px;
+            background-color:#C26DBC;
+            display:block;
+            margin:10px auto 0 auto;
+            border-radius:3px;
+        }
+
+        .fav-masonry{
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+            justify-content:center;
+        }
+
+        .fav-card{
+            flex:0 1 calc(33.33% - 20px);
+            max-width:250px;
+            background:var(--color,#FFF);
+            border-radius:20px;
+            padding:20px;
+            transform:translateY(20px) rotate(var(--rotate,0deg));
+            opacity:0;
+            box-shadow:0 5px 15px rgba(0,0,0,0.25);
+            transition:transform 0.4s ease, box-shadow 0.4s ease;
+            cursor:pointer;
+            animation:fadeInUp 0.6s forwards;
+            animation-delay:var(--delay,0s);
+        }
+
+        .fav-card:hover{
+            transform:rotate(0deg) scale(1.05);
+            box-shadow:0 18px 35px rgba(0,0,0,0.3);
+        }
+
+        .fav-card img{
+            width:100%;
+            height:180px;
+            object-fit:cover;
+            border-radius:15px;
+            margin-bottom:15px;
+            transition:transform 0.3s ease;
+        }
+
+        .fav-card:hover img{transform:scale(1.08) rotate(2deg);}
+        .fav-card h3{margin-bottom:10px;color:#333;}
+        .fav-card p{color:#444;font-size:0.95em;line-height:1.5;}
+
+        @keyframes fadeInUp{
+            to{opacity:1;transform:translateY(0) rotate(var(--rotate,0deg));}
+        }
+        @media(max-width:900px){.fav-card{flex:0 1 calc(50% - 20px);}}
+        @media(max-width:600px){.fav-card{flex:0 1 100%;}}
+
+        .lightbox{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,.95);
+            justify-content:center;
+            align-items:center;
+            z-index:9999;
+        }
+        .lightbox img{
+            max-width:90%;
+            max-height:90%;
+            border-radius:15px;
+        }
+        .lightbox .close{
+            position:absolute;
+            top:30px;
+            right:40px;
+            font-size:40px;
+            color:white;
+            cursor:pointer;
+        }
+        .lightbox .prev,.lightbox .next{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+            background:rgba(0,0,0,.5);
+            color:white;
+            border:none;
+            padding:5px 10px;
+            cursor:pointer;
+            border-radius:5px;
+        }
+        .lightbox .prev{left:20px;}
+        .lightbox .next{right:20px;}
+
+        #datetime{
+            position: fixed;
+            bottom: 60px;
+            left:20px;
+            background: rgba(173,216,230,0.6);
+            padding:8px 12px;
+            border-radius:10px;
+            font-weight:bold;
+            box-shadow:0 3px 8px rgba(0,0,0,0.2);
+            font-family: Arial,sans-serif;
+            z-index:1000;
+        }
+
+        .footer{
+            background:#111;
+            color:#ddd;
+            text-align:center;
+            padding:15px 0;
+            bottom:0;
+            left:0;
+            width:100%;
+            border-top:3px solid rgb(56,130,209);
+            font-size:0.9em;
+            box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+            position:fixed;
+        }
+        .footer p{margin:0;}
+
+        /* ===== Slide Up Animation on Page Load ===== */
+.slide-up {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: slideUpFade 0.8s ease forwards;
+}
+
+@keyframes slideUpFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    </style>
+</head>
+<body>
+<div id="welcome-bar"></div>
+
+<h1 style="color: #3C467B"><b>Safia' Personal Website</b></h1>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="aboutme.html">About Me</a>
+    <a href="family.html">Family</a>
+    <a href="education.html">Education</a>
+    <a href="experience.html">Experience</a>
+    <a href="friends.html">Friends</a>
+    <a href="favourites.html" class="active">Favourites</a>
+    <a href="gallery.html">Gallery</a>
+</nav>
+
+<div class="favourites-section">
+    <h2 style= "color: #002455"><b>MY FAVOURITES<b></h2>
+    <div class="fav-masonry">
+        <!-- Food -->
+        <div class="fav-card" style="--rotate:-3deg;--color:#FFC0CB;--delay:0s;">
+            <h3>Food</h3>
+            <img src="images/dakgalbi.jpg" alt="Favourite Food">
+            <img src="images/ramen.jpeg" alt="Favourite Food">
+            <p>I love foods, especially spicy and sweet treats.</p>
+        </div>
+
+        <!-- Drinks -->
+        <div class="fav-card" style="--rotate:3deg;--color:#A3F7BF;--delay:0.3s;">
+            <h3>Drinks</h3>
+            <img src="images/matcha.jpeg" alt="Favourite Drinks">
+            <img src="images/chagee.jpeg" alt="Favourite Drinks">
+            <p>I love matcha and coffee the most!</p>
+        </div>
+
+        <!-- Desserts -->
+        <div class="fav-card" style="--rotate:2deg;--color:#FFECB3;--delay:0.2s;">
+            <h3>Desserts</h3>
+            <img src="images/cikbakes.jpeg" alt="Favourite Desserts">
+            <img src="images/llaollao.jpg" alt="Favourite Desserts">
+            <p>I really love cold and sweet desserts.</p>
+        </div>
+
+        <!-- Hobbies -->
+        <div class="fav-card" style="--rotate:-2deg;--color:#FFDD94;--delay:0.4s;">
+            <h3>Hobbies</h3>
+            <img src="images/kdrama.jpg" alt="Favourite Hobby">
+            <img src="images/cdrama.jpg" alt="Favourite Hobby">
+            <p>Watching K-drama and C-drama are my top hobbies.</p>
+        </div>
+
+        <!-- Movies -->
+        <div class="fav-card" style="--rotate:-1deg;--color:#FFD1DC;--delay:0.5s;">
+            <h3>Movies</h3>
+            <img src="images/movie 1.jpg" alt="Favourite Movies">
+            <img src="images/movie 2.jpg" alt="Favourite Movies">
+            <p>Adventures, thrillers, and fantasy movies are my favourite genres.</p>
+        </div>
+
+        <!-- Books -->
+        <div class="fav-card" style="--rotate:1deg;--color:#FFF79A;--delay:0.6s;">
+            <h3>Books</h3>
+            <img src="images/book.jpg" alt="Favourite Books">
+            <img src="images/book 1.jpg" alt="Favourite Books">
+            <p>I enjoy novels and fantasy series.</p>
+        </div>
+
+        <!-- Actress -->
+        <div class="fav-card" style="--rotate:-4deg;--color:#B0C4DE;--delay:0.7s;">
+            <h3>Actress</h3>
+            <img src="images/lusi.jpg" alt="Favourite Actress">
+            <img src="images/sung kyung.jpg" alt="Favourite Actress">
+            <p>These are my favourite Chinese and Korean actresses.</p>
+        </div>
+
+        <!-- Songs -->
+    <div class="fav-card" style="--rotate:2deg;--color:#8FD3F4;--delay:0.8s;">
+    <h3>Songs</h3>
+    <img src="images/svt.webp" alt="Favourite Songs">
+    <img src="images/nadin.jpg" alt="Favourite Songs">
+    <p>K-pop and Indonesian songs are my favourites.</p>
+    
+    <!-- Audio Player -->
+    <div class="audio-player">
+        <audio controls loop>
+            <source src="audio/maestro seventeen.mp3" type="audio/mpeg">
+        </audio>
+        <p>Song: Maestro by Seventeen</p>
+    </div>
+</div>
+        <!-- Places -->
+        <div class="fav-card" style="--rotate:-2deg;--color:#C1E1C1;--delay:0.9s;">
+            <h3>Places</h3>
+            <img src="images/sungai.jpeg" alt="Favourite Places">
+            <img src="images/bukit singa.jpeg" alt="Favourite Places">
+            <p>I enjoy travelling to nature spots for healing.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightboxFav">
+    <span class="close" onclick="closeLightboxFav()">&times;</span>
+    <img id="lightboxImgFav">
+    <button id="prevLightboxFav" class="prev">❮</button>
+    <button id="nextLightboxFav" class="next">❯</button>
+</div>
+
+<div id="datetime"></div>
+
+<footer class="footer">
+    <p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+</footer>
+
+<script>
+    // Welcome bar
+    window.addEventListener("DOMContentLoaded", () => {
+        const name = localStorage.getItem("visitorName");
+        if(name){
+            const bar = document.getElementById("welcome-bar");
+            bar.innerHTML = `Hi ${name}, Welcome to my personal website!`;
+            bar.style.display='block';
+            setTimeout(()=>{bar.style.opacity=1;},50);
+        }
+    });
+
+    // Date & Time
+    function updateDateTime(){
+        const now = new Date();
+        const day = now.getDate();
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const month = monthNames[now.getMonth()];
+        const year = now.getFullYear();
+        const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        const weekday = weekdays[now.getDay()];
+        let h=now.getHours(); let m=now.getMinutes(); let s=now.getSeconds();
+        h=h<10?"0"+h:h; m=m<10?"0"+m:m; s=s<10?"0"+s:s;
+        document.getElementById("datetime").innerHTML=`${day} ${month} ${year}, ${weekday} | ${h}:${m}:${s}`;
+    }
+    setInterval(updateDateTime,1000);
+    updateDateTime();
+
+    // Lightbox
+    let favCards = document.querySelectorAll('.fav-card');
+    let current={card:0,index:0};
+    favCards.forEach((card,ci)=>{
+        let imgs = card.querySelectorAll('img');
+        imgs.forEach((img,i)=>{
+            img.onclick = ()=>{
+                document.getElementById('lightboxFav').style.display='flex';
+                document.getElementById('lightboxImgFav').src=img.src;
+                current.card=ci;
+                current.index=i;
+            }
+        });
+    });
+
+    document.getElementById('nextLightboxFav').onclick = ()=>{
+        let imgs = favCards[current.card].querySelectorAll('img');
+        current.index = (current.index+1)%imgs.length;
+        document.getElementById('lightboxImgFav').src = imgs[current.index].src;
+    }
+
+    document.getElementById('prevLightboxFav').onclick = ()=>{
+        let imgs = favCards[current.card].querySelectorAll('img');
+        current.index = (current.index-1+imgs.length)%imgs.length;
+        document.getElementById('lightboxImgFav').src = imgs[current.index].src;
+    }
+
+    function closeLightboxFav(){ document.getElementById('lightboxFav').style.display='none'; }
+</script>
+</body>
+</html>

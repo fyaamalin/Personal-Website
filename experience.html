@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Experience - Table Layout</title>
+<style>
+body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url(images/gallery.jpg) no-repeat center center fixed;
+        background-size: cover;
+        background-color: #f2f2f2;
+
+/* Fade-in page animation */
+@keyframes fadeInPage {
+    to { opacity: 1; }
+}
+
+/* Heading */
+h1{
+    text-align:center;
+}
+
+/* Subheading for table */
+h2{
+    text-align:center;
+    margin-bottom:20px;
+    color: #134686;
+}
+
+/* Welcome bar */
+    #welcome-bar {
+        display: none;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        width: 80%;
+        margin: 20px auto 5px auto;
+        padding: 12px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+        transition: opacity 0.5s ease;
+    }
+
+/* Navigation */
+nav{
+    background:skyblue;
+    width:800px;
+    margin:20px auto;
+    padding:8px 20px;
+    border-radius:50px;
+    display:flex;
+    justify-content:space-between;
+    box-shadow:2px 2px 20px rgba(0,0,0,.3);
+}
+nav a{
+    text-decoration:none;
+    color:black;
+    padding:10px 18px;
+    border-radius:50px;
+}
+nav a.active{background:lightgreen}
+
+/* Table styling */
+.experience-section{
+    width:90%;
+    margin:30px auto 140px;
+    padding:30px;
+    background:#faf7ff;
+    border-radius:15px;
+    box-shadow:2px 2px 15px rgba(0,0,0,.2);
+}
+
+table{
+    width:100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* fix column width */
+}
+
+th, td{
+    border: 1px solid #ccc;
+    padding:15px;
+    vertical-align: top;
+}
+
+th{
+    background:#6D94C5;
+    color:white;
+    text-transform: uppercase;
+    text-align:center;
+}
+
+/* Description & Category text justify */
+td.description, td.category{
+    text-align:justify;
+}
+
+/* Center images */
+td.images{
+    text-align:center;
+}
+
+/* Slider inside table */
+.slider{
+    position:relative;
+    width:100%;
+    height:220px;
+    overflow:hidden;
+    border-radius:10px;
+}
+.slider img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    display:none;
+    cursor:pointer;
+    transition: opacity 0.5s ease;
+}
+.slider img.active{
+    display:block;
+    opacity:1;
+}
+.prev,.next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,.5);
+    color:white;
+    border:none;
+    padding:3px 8px;
+    cursor:pointer;
+    border-radius:5px;
+}
+.prev{left:5px}
+.next{right:5px}
+
+/* Lightbox for slider */
+.lightbox{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.95);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+.lightbox img{
+    max-width:90%;
+    max-height:90%;
+    border-radius:15px;
+}
+.lightbox .close{
+    position:absolute;
+    top:30px;
+    right:40px;
+    font-size:40px;
+    color:white;
+    cursor:pointer;
+}
+
+/* Live date & time */
+#datetime {
+    position: fixed;
+    bottom: 60px;
+    left: 20px;
+    background: rgba(173, 216, 230, 0.6);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+}
+
+/* Footer */
+    .footer {
+        background: #111;
+        color: #ddd;
+        text-align: center;
+        padding: 15px 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-top: 3px solid rgb(56,130,209);
+        font-size: 0.9em;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        position: fixed;
+    }
+
+    .footer p{
+        margin: 0;
+    }
+
+@keyframes fadeSlideIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<div id="welcome-bar"></div>
+
+<h1 style="color: #3C467B"><b>Safia' Personal Website</b></h1>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="aboutme.html">About Me</a>
+<a href="family.html">Family</a>
+<a href="education.html">Education</a>
+<a href="experience.html" class="active">Experience</a>
+<a href="friends.html">Friends</a>
+<a href="favourites.html">Favourites</a>
+<a href="gallery.html">Gallery</a>
+</nav>
+
+<div class="experience-section">
+<h2><b>EXPERIENCES</b></h2>
+<table>
+<tr>
+<th class="category">Category</th>
+<th class="description">Description</th>
+<th class="images">Images</th>
+</tr>
+
+<tr>
+<td class="category">School Projects</td>
+<td class="description">Designed posters, created presentations and completed group projects creatively.</td>
+<td class="images">
+<div class="slider" data-section="0">
+<img src="images/poster.jpeg" class="active">
+<img src="images/poster 1.jpeg">
+<img src="images/aspa.jpeg">
+<button class="prev">❮</button>
+<button class="next">❯</button>
+</div>
+</td>
+</tr>
+
+<tr>
+<td class="category">University Club</td>
+<td class="description">Actively involved in a university club and gained experience leading and organizing a programme.</td>
+<td class="images">
+<div class="slider" data-section="1">
+<img src="images/orc lead.jpeg" class="active">
+<img src="images/kayak.jpeg">
+<button class="prev">❮</button>
+<button class="next">❯</button>
+</div>
+</td>
+</tr>
+
+<tr>
+<td class="category">Internship</td>
+<td class="description">Completed industrial training where I learned workplace skills, teamwork, and professional responsibility.</td>
+<td class="images">
+<div class="slider" data-section="2">
+<img src="images/li 7.jpeg" class="active">
+<img src="images/li 2.jpeg">
+<button class="prev">❮</button>
+<button class="next">❯</button>
+</div>
+</td>
+</tr>
+
+<tr>
+<td class="category">Volunteer Work</td>
+<td class="description">Organized a programme at Rumah Anak Yatim Lilbanat Darul Naim.</td>
+<td class="images">
+<div class="slider" data-section="3">
+<img src="images/hbo.jpeg" class="active">
+<img src="images/hbo 1.jpeg">
+<button class="prev">❮</button>
+<button class="next">❯</button>
+</div>
+</td>
+</tr>
+
+</table>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+<span class="close" onclick="closeLightbox()">&times;</span>
+<img id="lightboxImg">
+<button id="prevLightbox" class="prev">❮</button>
+<button id="nextLightbox" class="next">❯</button>
+</div>
+
+<!-- Live date & time -->
+<div id="datetime"></div>
+
+<footer class="footer">
+<p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+</footer>
+
+<script>
+let sliders = document.querySelectorAll('.slider');
+let currentLightbox = {section:0, index:0};
+
+// Initialize sliders
+sliders.forEach((slider, secIndex)=>{
+    let imgs = slider.querySelectorAll('img');
+    let index=0;
+
+    function showImage(i){
+        imgs.forEach(img=>img.classList.remove('active'));
+        imgs[i].classList.add('active');
+        index=i;
+    }
+
+    slider.querySelector('.next').onclick=()=>{ showImage((index+1)%imgs.length);}
+    slider.querySelector('.prev').onclick=()=>{ showImage((index-1+imgs.length)%imgs.length);}
+
+    imgs.forEach((img, i)=>{
+        img.onclick=()=>{
+            document.getElementById('lightbox').style.display='flex';
+            document.getElementById('lightboxImg').src=img.src;
+            currentLightbox.section = secIndex;
+            currentLightbox.index = i;
+        }
+    });
+});
+
+// Lightbox next/prev
+document.getElementById('nextLightbox').onclick = ()=>{
+    let imgs = sliders[currentLightbox.section].querySelectorAll('img');
+    currentLightbox.index = (currentLightbox.index+1)%imgs.length;
+    document.getElementById('lightboxImg').src = imgs[currentLightbox.index].src;
+}
+document.getElementById('prevLightbox').onclick = ()=>{
+    let imgs = sliders[currentLightbox.section].querySelectorAll('img');
+    currentLightbox.index = (currentLightbox.index-1+imgs.length)%imgs.length;
+    document.getElementById('lightboxImg').src = imgs[currentLightbox.index].src;
+}
+
+function closeLightbox(){
+    document.getElementById('lightbox').style.display='none';
+}
+
+// Live date & time
+function updateDateTime() {
+    const now = new Date();
+    const day = now.getDate();
+    const monthNames = ["January","February","March","April","May","June",
+                        "July","August","September","October","November","December"];
+    const month = monthNames[now.getMonth()];
+    const year = now.getFullYear();
+    const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const weekday = weekdays[now.getDay()];
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    hours = hours < 10 ? "0"+hours : hours;
+    minutes = minutes < 10 ? "0"+minutes : minutes;
+    seconds = seconds < 10 ? "0"+seconds : seconds;
+
+    const formatted = `${day} ${month} ${year}, ${weekday} | ${hours}:${minutes}:${seconds}`;
+    document.getElementById("datetime").innerHTML = formatted;
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// Welcome bar
+window.addEventListener("DOMContentLoaded", () => {
+    const name = localStorage.getItem("visitorName");
+    if(name){
+        const bar = document.getElementById("welcome-bar");
+        bar.innerHTML = `Hi ${name}, Welcome to my personal website!`;
+        bar.style.display = 'block';
+        setTimeout(()=>{ bar.style.opacity = 1; }, 50);
+    }
+});
+
+// ===== Apply slide-up animation when page opens =====
+window.addEventListener("load", () => {
+    document.querySelectorAll(".content").forEach((box, index) => {
+        box.classList.add("slide-up");
+        box.style.animationDelay = `${index * 0.15}s`;
+    });
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends Page - Single Column Accordion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url(images/gallery.jpg) no-repeat center center fixed;
+            background-size: cover;
+            background-color: #f2f2f2;
+        }
+
+        
+/* Welcome highlight bar */
+    #welcome-bar {
+        display: none;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        width: 80%;
+        margin: 20px auto 5px auto;
+        padding: 12px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+        transition: opacity 0.5s ease;
+    }
+
+    /* ===== Fade-in whole page ===== */
+body {
+    opacity: 0;
+    animation: fadeInPage 1s forwards;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== Accordion images fade-in effect ===== */
+.accordion-content.active img {
+    animation: fadeSlide 0.6s ease forwards;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Welcome bar smooth fade-in ===== */
+#welcome-bar {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+/* ===== Optional: Accordion content fade-in ===== */
+.accordion-content.active {
+    animation: fadeContent 0.6s ease forwards;
+}
+
+@keyframes fadeContent {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+        h1 {
+            text-align: center;
+            color: black;
+        }
+
+        nav {
+            background: skyblue;
+            width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px auto;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 50px;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        nav a:hover { background-color: rgb(56,130,209); color: white; }
+        nav a.active { background-color: lightgreen; color: black; box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+
+        .content {
+            width: 80%;
+            max-width: 800px;
+            margin: 40px auto 140px auto;
+            text-align: center;
+        }
+
+        /* Accordion */
+        .accordion-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .accordion-header {
+            padding: 15px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            background-color: #34699A;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover { background-color: #6D94C5; }
+        .accordion-header::after {
+            content: "▼";
+            transition: transform 0.4s ease;
+        }
+        .accordion-header.active::after { transform: rotate(-180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            padding: 0 20px;
+        }
+
+        .accordion-content.active {
+            opacity: 1;
+            padding: 20px;
+        }
+
+        .accordion-images {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .accordion-images img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .accordion-content.active img {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .section-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Lightbox */
+        .lightbox { display: none; position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        .lightbox-content { max-width: 90%; max-height: 90%; border-radius: 15px; }
+        .lightbox .close { position: absolute; top: 30px; right: 40px; color: white; font-size: 50px; font-weight: bold; cursor: pointer; transition: color 0.3s; }
+        .lightbox .close:hover { color: #C26DBC; }
+        .lightbox .nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 60px; color: white; cursor: pointer; user-select: none; }
+        .lightbox .prev { left: 30px; }
+        .lightbox .next { right: 30px; }
+
+        /* Date & Time */
+        #datetime {
+            position: fixed;
+            bottom: 60px;
+            left: 20px;
+            background: rgba(173, 216, 230, 0.6);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+
+/* Footer */
+    .footer {
+        background: #111;
+        color: #ddd;
+        text-align: center;
+        padding: 15px 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-top: 3px solid rgb(56,130,209);
+        font-size: 0.9em;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        position: fixed;
+    }
+
+    .footer p{
+        margin: 0;
+    }
+
+    /* ===== Slide Up Animation on Page Load ===== */
+.slide-up {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: slideUpFade 0.8s ease forwards;
+}
+
+@keyframes slideUpFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Welcome bar -->
+<div id="welcome-bar"></div>
+
+<h1 style="color: #3C467B"><b>Safia' Personal Website</b></h1>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="aboutme.html">About Me</a>
+    <a href="family.html">Family</a>
+    <a href="education.html">Education</a>
+    <a href="experience.html">Experience</a>
+    <a href="friends.html" class="active">Friends</a>
+    <a href="favourites.html">Favourites</a>
+    <a href="gallery.html">Gallery</a>
+</nav>
+
+<div class="content">
+    <!-- Accordion Sections -->
+    <div class="accordion-section">
+        <div class="accordion-header">Highschool Friends</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/hs.jpeg" class="clickable-img">
+                <img src="images/hs 1.jpeg" class="clickable-img">
+                <img src="images/hs 2.jpeg" class="clickable-img">
+            </div>
+            <div class="section-caption">Memories from our highschool days.</div>
+        </div>
+    </div>
+
+    <div class="accordion-section">
+        <div class="accordion-header">Diploma Friends</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/miryana.jpeg" class="clickable-img">
+                <img src="images/miryana 2.jpeg" class="clickable-img">
+                <img src="images/dip.jpeg" class="clickable-img">
+                <img src="images/idah hasya.jpeg" class="clickable-img">
+                <img src="images/dip 1.jpeg" class="clickable-img">
+                <img src="images/dekan.jpeg" class="clickable-img">
+                <img src="images/wedding.jpeg" class="clickable-img">
+                <img src="images/dip 3.jpeg" class="clickable-img">
+                <img src="images/dp 4.jpeg" class="clickable-img">
+                <img src="images/dp 5.jpeg" class="clickable-img">
+            </div>
+
+            <div class="section-caption">Fun times during diploma studies.</div>
+        </div>
+    </div>
+
+    <div class="accordion-section">
+        <div class="accordion-header">University Club Friends</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/orc.jpeg" class="clickable-img">
+                <img src="images/orc 18.jpeg" class="clickable-img">
+                <img src="images/orc 1.jpeg" class="clickable-img">
+                <img src="images/orc 2.jpeg" class="clickable-img">
+                <img src="images/orc 4.jpeg" class="clickable-img">
+                <img src="images/agm.jpeg" class="clickable-img">
+                <img src="images/orcibs.jpeg" class="clickable-img">
+                <img src="images/orc 5.jpeg" class="clickable-img">
+                <img src="images/orc 6.jpeg" class="clickable-img">
+                <img src="images/orc 7.jpeg" class="clickable-img">
+                <img src="images/orc 8.jpeg" class="clickable-img">
+                <img src="images/orc 3.jpeg" class="clickable-img">
+                <img src="images/orc 9.jpeg" class="clickable-img">
+                <img src="images/orc 10.jpeg" class="clickable-img">
+                <img src="images/orc 11.jpeg" class="clickable-img">
+                <img src="images/orc 12.jpeg" class="clickable-img">
+                <img src="images/orc 13.jpeg" class="clickable-img">
+                <img src="images/orc 14.jpeg" class="clickable-img">
+                <img src="images/orc 15.jpeg" class="clickable-img">
+                <img src="images/orc 16.jpeg" class="clickable-img">
+                <img src="images/orc 17.jpeg" class="clickable-img">
+                <img src="images/orc 19.jpeg" class="clickable-img">
+            </div>
+            <div class="section-caption">Club activities and events together.</div>
+        </div>
+    </div>
+
+    <div class="accordion-section">
+        <div class="accordion-header">Housemates</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/fesko.jpeg" class="clickable-img">
+                <img src="images/eskep raya.jpeg" class="clickable-img">
+                <img src="images/hm.jpeg" class="clickable-img">
+                <img src="images/hm 1.jpeg" class="clickable-img">
+                <img src="images/hm 2.jpeg" class="clickable-img">
+                <img src="images/hm 3.jpeg" class="clickable-img">
+                <img src="images/hm 4.jpeg" class="clickable-img">
+                <img src="images/hm 5.jpeg" class="clickable-img">
+                <img src="images/hm 6.jpeg" class="clickable-img">
+            </div>
+            <div class="section-caption">Living together and sharing memories.</div>
+        </div>
+    </div>
+
+    <div class="accordion-section">
+        <div class="accordion-header">Classmates</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/cs.jpeg" class="clickable-img">
+                <img src="images/cs1.jpeg" class="clickable-img">
+                <img src="images/cs 7.jpeg" class="clickable-img">
+                <img src="images/cs 2.jpeg" class="clickable-img">
+                <img src="images/cs 3.jpeg" class="clickable-img">
+                <img src="images/cs 4.jpeg" class="clickable-img">
+                <img src="images/cs 5.jpeg" class="clickable-img">
+                <img src="images/cs 6.jpeg" class="clickable-img">
+            </div>
+            <div class="section-caption">Learning and growing together in class.</div>
+        </div>
+    </div>
+
+    <div class="accordion-section">
+        <div class="accordion-header">Trio Cousin</div>
+        <div class="accordion-content">
+            <div class="accordion-images">
+                <img src="images/iqi 1.jpeg" class="clickable-img">
+                <img src="images/iqi 2.jpeg" class="clickable-img">
+                <img src="images/iqi 3.jpeg" class="clickable-img">
+                <img src="images/iqi 4.jpeg" class="clickable-img">
+                <img src="images/iqi 5.jpeg" class="clickable-img">
+                <img src="images/iqi 6.jpeg" class="clickable-img">
+                <img src="images/iqi 7.jpeg" class="clickable-img">
+                <img src="images/iqi 8.jpeg" class="clickable-img">
+            </div>
+            <div class="section-caption">Spent and bonding time with cousins</div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <span class="nav prev">&#10094;</span>
+    <img class="lightbox-content" id="lightbox-img">
+    <span class="nav next">&#10095;</span>
+</div>
+
+<!-- Date & Time -->
+<div id="datetime"></div>
+
+<footer class="footer">
+    <p>&copy; 2025 Designed for educational purposes | Safia Amalin Ahmad Tarmizi</p>
+</footer>
+
+<script>
+
+    // Accordion
+    const headers = document.querySelectorAll('.accordion-header');
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const isActive = content.classList.contains('active');
+
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                c.style.maxHeight = null;
+                c.classList.remove('active');
+            });
+            headers.forEach(h => h.classList.remove('active'));
+
+            if(!isActive){
+                content.classList.add('active');
+                header.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+
+    // Lightbox Slide per Section
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.querySelector('.lightbox .close');
+    const prevBtn = document.querySelector('.lightbox .prev');
+    const nextBtn = document.querySelector('.lightbox .next');
+
+    let currentImages = [];
+    let currentIndex = 0;
+
+    document.querySelectorAll('.accordion-images').forEach(section => {
+        const imgs = section.querySelectorAll('img');
+        imgs.forEach((img, index) => {
+            img.addEventListener('click', () => {
+                currentImages = Array.from(imgs);
+                currentIndex = index;
+                lightbox.style.display = 'flex';
+                lightboxImg.src = currentImages[currentIndex].src;
+            });
+        });
+    });
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        lightboxImg.src = currentImages[currentIndex].src;
+    }
+
+    function showPrev() {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        lightboxImg.src = currentImages[currentIndex].src;
+    }
+
+    nextBtn.addEventListener('click', showNext);
+    prevBtn.addEventListener('click', showPrev);
+
+    closeBtn.addEventListener('click', () => { lightbox.style.display = 'none'; });
+    lightbox.addEventListener('click', e => { if(e.target === lightbox) lightbox.style.display = 'none'; });
+
+    // Welcome bar
+    window.addEventListener("DOMContentLoaded", () => {
+        const name = localStorage.getItem("visitorName");
+        if(name){
+            const bar = document.getElementById("welcome-bar");
+            bar.innerHTML = `Hi ${name}, Welcome to my personal website!`;
+            bar.style.display = 'block';
+            setTimeout(()=>{ bar.style.opacity = 1; }, 50);
+        }
+    });
+
+    // Live date & time JS
+    function updateDateTime() {
+        const now = new Date();
+        const day = now.getDate();
+        const monthNames = ["January","February","March","April","May","June",
+                            "July","August","September","October","November","December"];
+        const month = monthNames[now.getMonth()];
+        const year = now.getFullYear();
+        const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        const weekday = weekdays[now.getDay()];
+
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+
+        hours = hours < 10 ? "0"+hours : hours;
+        minutes = minutes < 10 ? "0"+minutes : minutes;
+        seconds = seconds < 10 ? "0"+seconds : seconds;
+
+        const formatted = `${day} ${month} ${year}, ${weekday} | ${hours}:${minutes}:${seconds}`;
+        document.getElementById("datetime").innerHTML = formatted;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // ===== Apply slide-up animation when page opens =====
+window.addEventListener("load", () => {
+    document.querySelectorAll(".content").forEach((box, index) => {
+        box.classList.add("slide-up");
+        box.style.animationDelay = `${index * 0.15}s`;
+    });
+});
+
+</script>
+
+</body>
+</html>
